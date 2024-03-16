@@ -1,0 +1,12 @@
+{
+  "layer_config": {
+    "port": "8090",
+    "service_name": "sample_service",
+    "log_level": "DEBUG",
+    "log_format": "json",
+    "config_refresh_interval": "2s"
+  },
+  "external_config": {
+    "in_memory": true
+  }
+}
