@@ -141,7 +141,7 @@ func (ws *transformWebService) health(c echo.Context) error {
 
 func (ws *transformWebService) transform(c echo.Context) error {
 	parser := egdm.NewEntityParser(egdm.NewNamespaceContext())
-	parser.WithExpandURIs()
+	parser.WithNoContext().WithExpandURIs()
 	ec, err := parser.LoadEntityCollection(c.Request().Body)
 
 	if err != nil {
@@ -158,7 +158,12 @@ func (ws *transformWebService) transform(c echo.Context) error {
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
 	c.Response().WriteHeader(http.StatusOK)
 
-	transformed.WriteEntityGraphJSON(c.Response().Writer)
+	transformed.SetOmitContextOnWrite(true)
+	err = transformed.WriteEntityGraphJSON(c.Response().Writer)
+	if err != nil {
+		ws.logger.Warn(err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, "could not write the response: %s", err.Error())
+	}
 	c.Response().Flush()
 
 	return nil
