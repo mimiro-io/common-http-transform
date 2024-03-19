@@ -55,6 +55,12 @@ func TestNewSampleDataLayer(t *testing.T) {
 				"props": {
 					"http://example.com/name": "John Smith"
 				}
+			},
+			{
+				"id": "http://example.com/2",
+				"props": {
+					"http://example.com/name": "James Shadwell"
+				}
 			}
 		]`
 
