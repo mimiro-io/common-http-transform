@@ -51,13 +51,7 @@ func TestNewSampleDataLayer(t *testing.T) {
 	data := `
 		[
 			{
-				"id" : "@context",
-				"namespaces": {
-					"ex": "http://example.com/"
-				}
-			},
-			{
-				"id": "ex:1",
+				"id": "http://example.com/1",
 				"props": {
 					"http://example.com/name": "John Smith"
 				}
@@ -67,7 +61,7 @@ func TestNewSampleDataLayer(t *testing.T) {
 	reader := strings.NewReader(data)
 
 	nsManager := egdm.NewNamespaceContext()
-	parser := egdm.NewEntityParser(nsManager).WithExpandURIs().WithLenientNamespaceChecks()
+	parser := egdm.NewEntityParser(nsManager).WithNoContext().WithExpandURIs()
 	ec, err := parser.LoadEntityCollection(reader)
 	if err != nil {
 		t.Error(err)
@@ -81,6 +75,7 @@ func TestNewSampleDataLayer(t *testing.T) {
 	}
 
 	// load a new entity collection from the response
+	parser = egdm.NewEntityParser(egdm.NewNamespaceContext()).WithNoContext().WithExpandURIs()
 	ec1, err := parser.LoadEntityCollection(resp.Body)
 	if err != nil {
 		t.Error(err)
