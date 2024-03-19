@@ -46,7 +46,7 @@ type Result struct {
 
 func processEntitiesConcurrently(entities []*egdm.Entity, concurrency int, handler func(entity *egdm.Entity) (*egdm.Entity, error)) ([]*egdm.Entity, error) {
 	var wg sync.WaitGroup
-	results := make([]*egdm.Entity, len(entities))
+	results := make([]Result, len(entities))
 	resultsChan := make(chan Result, len(entities))
 
 	// Number of goroutines to use
@@ -78,10 +78,18 @@ func processEntitiesConcurrently(entities []*egdm.Entity, concurrency int, handl
 		if result.Error != nil {
 			return nil, result.Error
 		}
-		results[result.Index] = result.Entity
+		results[result.Index] = result
 	}
 
-	return results, nil
+	// filter out non nil
+	finalResults := make([]*egdm.Entity, 0)
+	for _, result := range results {
+		if result.Entity != nil {
+			finalResults = append(finalResults, result.Entity)
+		}
+	}
+
+	return finalResults, nil
 }
 
 func processEntity(entity *egdm.Entity) (*egdm.Entity, error) {
