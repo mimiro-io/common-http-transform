@@ -35,7 +35,7 @@ func (dl *SampleTransform) Transform(ec *egdm.EntityCollection) (*egdm.EntityCol
 	if err != nil {
 		return nil, ct.Err(err, 1)
 	}
-	return &egdm.EntityCollection{Entities: result}, nil
+	return &egdm.EntityCollection{Entities: result, NamespaceManager: ec.NamespaceManager}, nil
 }
 
 type Result struct {
