@@ -146,13 +146,13 @@ func (ws *transformWebService) transform(c echo.Context) error {
 
 	if err != nil {
 		ws.logger.Warn(err.Error())
-		return echo.NewHTTPError(http.StatusBadRequest, "could not parse the request body: %s", err.Error())
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("could not parse the request body: %s", err.Error()))
 	}
 
 	transformed, err := ws.transformService.Transform(ec)
 	if err != nil {
 		ws.logger.Warn(err.Error())
-		return echo.NewHTTPError(http.StatusInternalServerError, "could not process the entities: %", err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("could not process the entities: %", err.Error()))
 	}
 
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
@@ -161,7 +161,7 @@ func (ws *transformWebService) transform(c echo.Context) error {
 	err = transformed.WriteEntityGraphJSON(c.Response().Writer)
 	if err != nil {
 		ws.logger.Warn(err.Error())
-		return echo.NewHTTPError(http.StatusInternalServerError, "could not write the response: %s", err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("could not write the response: %s", err.Error()))
 	}
 	c.Response().Flush()
 
